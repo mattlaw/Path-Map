@@ -7,6 +7,14 @@ use warnings;
 
 Path::Mapper - map things into a path-like structure
 
+=head1 VERSION
+
+0.01
+
+=cut
+
+our $VERSION = '0.01';
+
 =head1 SYNOPSIS
 
     my $mapper = Path::Mapper->new(
