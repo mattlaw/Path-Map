@@ -49,10 +49,6 @@ use Path::Mapper::Match;
 
 =head1 METHODS
 
-Only the methods which comprise the main interface of this class are described
-here. See L</EXTENDING> for information about other methods which may be
-useful to subclasses.
-
 =head2 new
 
     $mapper = $class->new(@pairs)
@@ -157,16 +153,19 @@ sub lookup {
                 push @values, $segment;
             }
             else {
-                return $mapper->_no_match($segment, \@parts, \@values);
+                return undef;
             }
 
             $mapper = $next;
         }
-        elsif ($mapper->_is_endpoint) {
-            return $mapper->_match_with_values(\@values);
+        elsif (defined $mapper->_target) {
+            return Path::Mapper::Match->new(
+                mapper => $mapper,
+                values => \@values
+            );
         }
         else {
-            return $mapper->_exhausted(\@values);
+            return undef;
         }
     }
 }
@@ -187,116 +186,11 @@ sub handlers {
     );
 }
 
-=head1 EXTENDING
-
-This class has been designed with subclassing in mind, with fine-grained
-private methods available to be overridden to fine-tune behaviour.
-
-It's obviously also possible to override the main interface methods too, which
-would allow for interface compatibility between wildly differnt mapping
-schemes. The constructor has been specifically designed to allow for
-non-string "path template" elements as well as "handlers", so a custom
-C<add_handler> method could be made to make mappings based on regular
-expressions or objects.
-
-It should be noted that heterogeneous mappers are explicitly I<not> supported.
-There is an assumption that all objects in the tree are of the same class,
-with the same lookup rules, this allows us to optimise lookup by avoiding
-subroutine-level recursion.
-
-=over
-
-=item _tokenise_path
-
-Used by both C<add_handler> and C<lookup> to transform a path or path template
-into a list of path segments.
-
-This method could be overridden to change the path delimiter to something
-other than a slash, or to map paths with leading slashes differently to those
-without.
-
-=cut
-
 sub _tokenise_path {
     my ($self, $path) = @_;
 
     return grep length, split '/', $path;
 }
-
-=item _is_endpoint
-
-Returns true if the current mapping object has a handler associated with it.
-This could be overridden to return true all the time, which would force a
-match object to be returned even when the match is incomplete (i.e. C<<
-$match->handler >> is C<undef>).
-
-=cut
-
-sub _is_endpoint {
-    my $self = shift;
-
-    return defined $self->_target;
-}
-
-=item _match_with_values
-
-This is the return value of C<lookup> when a successful match has occurred.
-
-The parameter is an arrayref of variable values gathered along the way.
-
-This implementation constructs a L<Path::Mapper::Match> object, passing
-C<mapper> and C<values> parameters.
-
-=cut
-
-sub _match_with_values {
-    my ($self, $values) = @_;
-
-    return $self->_match_class->new( mapper => $self, values => $values );
-}
-
-=item _match_class
-
-The class of object to return on a successful match. This can be overridden on
-its own to return an object that's compatible with L<Path::Mapper::Match>.
-
-=cut
-
-sub _match_class { 'Path::Mapper::Match' }
-
-=item _no_match
-
-This is the return value of C<lookup> when a mapper doesn't have a matching
-segment for the next part of the path. The parameters passed in are 
-
-=over
-
-=item The path segment which didn't match
-
-=item An arrayref of segments following this
-
-=item An arrayref of variable values gathered so far
-
-=back
-
-This implementation simply returns C<undef>, ignoring the parameters.
-
-=cut
-
-sub _no_match { return undef }
-
-=item _exhausted
-
-This is the return value of C<lookup> when the path segments have been
-exhausted without an endpoint being found.
-
-The parameter is an arrayref of variable values gathered so far.
-
-This implementation simply returns C<undef>, ignoring the parameters.
-
-=cut
-
-sub _exhausted { return undef }
 
 sub _map { $_[0]->{map} ||= {} }
 
