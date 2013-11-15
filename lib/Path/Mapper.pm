@@ -182,7 +182,7 @@ Returns all of the handlers in no particular order.
 sub handlers {
     my $self = shift;
 
-    return (
+    return uniq(
         grep defined, $self->_target, map $_->handlers, values %{ $self->_map }
     );
 }
