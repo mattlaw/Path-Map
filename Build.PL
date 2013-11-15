@@ -10,13 +10,14 @@ my $builder = Module::Build->new(
     requires => {
         'perl' => '5.8.0',
         'List::Util' => 0,
-    }
+    },
     build_requires => {
         'Test::More' => 0,
     },
     configure_requires => {
         'Module::Build' => '0.40',
     },
+    create_makefile_pl => 'small',
 );
 
 $builder->create_build_script;

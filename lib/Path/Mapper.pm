@@ -5,7 +5,7 @@ use warnings;
 
 =head1 NAME
 
-Path::Mapper - map things into a path-like structure
+Path::Mapper - map paths to handlers
 
 =head1 VERSION
 

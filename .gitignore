@@ -1,0 +1,6 @@
+Build
+MYMETA.*
+Makefile
+Path-Mapper-*
+_build/
+blib/
