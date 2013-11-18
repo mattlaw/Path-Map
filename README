@@ -2,7 +2,7 @@ NAME
     Path::Map - map paths to handlers
 
 VERSION
-    0.01
+    0.02
 
 SYNOPSIS
         my $mapper = Path::Map->new(
