@@ -1,6 +1,6 @@
 Build
 MYMETA.*
 Makefile
-Path-Mapper-*
+Path-Map-*
 _build/
 blib/

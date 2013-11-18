@@ -1,4 +1,4 @@
-package Path::Mapper::Match;
+package Path::Map::Match;
 
 use strict;
 use warnings;
@@ -27,24 +27,24 @@ __END__
 
 =head1 NAME
 
-Path::Mapper::Match - Match object for Path::Mapper
+Path::Map::Match - Match object for Path::Map
 
 =head1 DESCRIPTION
 
-This object contains the match state from a L<Path::Mapper>
-L<lookup|Path::Mapper/lookup>.
+This object contains the match state from a L<Path::Map>
+L<lookup|Path::Map/lookup>.
 
 =head1 METHODS
 
 =head2 new
 
 The constructor. Should not be called directly, these objects should always be
-instantiated via L<Path::Mapper/lookup>.
+instantiated via L<Path::Map/lookup>.
 
 =head2 handler
 
 The handler that this match points to. This is identical to whatever was
-originally passed to L<Path::Mapper/add_handler>.
+originally passed to L<Path::Map/add_handler>.
 
 =head2 variables
 
@@ -60,7 +60,7 @@ appeared in the path.
 
 =head2 mapper
 
-The L<Path::Mapper> object which matched, this is normally an object nested
+The L<Path::Map> object which matched, this is normally an object nested
 inside the main "root" mapper.
 
 =head1 AUTHOR

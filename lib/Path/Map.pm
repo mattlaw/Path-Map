@@ -1,11 +1,11 @@
-package Path::Mapper;
+package Path::Map;
 
 use strict;
 use warnings;
 
 =head1 NAME
 
-Path::Mapper - map paths to handlers
+Path::Map - map paths to handlers
 
 =head1 VERSION
 
@@ -17,7 +17,7 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-    my $mapper = Path::Mapper->new(
+    my $mapper = Path::Map->new(
         '/x/y/z' => 'XYZ',
         '/a/b/c' => 'ABC',
         '/a/b'   => 'AB',
@@ -45,7 +45,7 @@ strings as illustrated in the synopsis.
 =head2 Comparison with Path::Router
 
 This class fulfills some of the same jobs as L<Path::Router>, with slightly
-different design goals. Broadly speaking, Path::Mapper is a lighter, faster,
+different design goals. Broadly speaking, Path::Map is a lighter, faster,
 but less featureful version of Path::Router.
 
 I've listed a few points of difference here to help highlight the pros and
@@ -55,35 +55,35 @@ cons of each class.
 
 =item Speed
 
-The main goal for Path::Mapper is lookup speed. Path::Router uses regexes to
-do lookups, but Path::Mapper uses hash lookups. Path::Mapper seems to be at
+The main goal for Path::Map is lookup speed. Path::Router uses regexes to
+do lookups, but Path::Map uses hash lookups. Path::Map seems to be at
 least an order of magnitude faster based on my benchmarks, and performance
 doesn't degrade with the number of routes that are added. The main source of
-performance degradation for Path::Mapper is path I<depth>, Path::Router
+performance degradation for Path::Map is path I<depth>, Path::Router
 degrades less with depth but more with width.
 
 This approach also means that the order in which routes are added makes no
-difference to Path::Mapper.
+difference to Path::Map.
 
 =item Reversibility
 
 Path::Router has a specific aim of being reversible. That is to say you can
-construct a path from a set of parameters. Path::Mapper does not currently
+construct a path from a set of parameters. Path::Map does not currently
 have this ability, patches welcome!
 
 =item Validation
 
-Path::Mapper has no built-in ability to validate path variables in any way.
+Path::Map has no built-in ability to validate path variables in any way.
 Obviously validation can be done externally after the fact, but that doesn't
 allow for the more complex routing rules possible in Path::Router. 
 
-In other words, it's not possible for Path::Mapper to differentiate two path
+In other words, it's not possible for Path::Map to differentiate two path
 templates which differ only in the variable segments (e.g. C<< /blog/:name >>
 vs C<< /blog/:id >> where C<id> matches C<\d+> and C<name> matches C<\D+>).
 
 =item Dependencies
 
-Path::Mapper has a very small dependency chain, whereas Path::Router is based
+Path::Map has a very small dependency chain, whereas Path::Router is based
 on L<Moose>, so has a relatively high dependency footprint. If you're already
 using Moose, there's obviously no additional cost in using Path::Router.
 
@@ -94,7 +94,7 @@ using Moose, there's obviously no additional cost in using Path::Router.
 use List::Util qw( reduce );
 use List::MoreUtils qw( uniq natatime );
 
-use Path::Mapper::Match;
+use Path::Map::Match;
 
 =head1 METHODS
 
@@ -164,7 +164,7 @@ sub add_handler {
 
     $match = $mapper->lookup($path)
 
-Returns a L<Path::Mapper::Match> object if the path matches a known path
+Returns a L<Path::Map::Match> object if the path matches a known path
 template, C<undef> otherwise.
 
 The two main methods on the match object are:
@@ -208,7 +208,7 @@ sub lookup {
             $mapper = $next;
         }
         elsif (defined $mapper->_target) {
-            return Path::Mapper::Match->new(
+            return Path::Map::Match->new(
                 mapper => $mapper,
                 values => \@values
             );

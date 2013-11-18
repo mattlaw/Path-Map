@@ -4,7 +4,7 @@ use warnings;
 use Module::Build;
 
 my $builder = Module::Build->new(
-    module_name         => 'Path::Mapper',
+    module_name         => 'Path::Map',
     license             => 'perl',
     dist_author         => 'Matt Lawrence <mattlaw@cpan.org>',
     requires => {

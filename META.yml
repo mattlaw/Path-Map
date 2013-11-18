@@ -12,13 +12,13 @@ license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
-name: Path-Mapper
+name: Path-Map
 provides:
-  Path::Mapper:
-    file: lib/Path/Mapper.pm
+  Path::Map:
+    file: lib/Path/Map.pm
     version: 0.01
-  Path::Mapper::Match:
-    file: lib/Path/Mapper/Match.pm
+  Path::Map::Match:
+    file: lib/Path/Map/Match.pm
 requires:
   List::Util: 0
   perl: v5.8.0

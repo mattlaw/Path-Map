@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "Path-Mapper",
+   "name" : "Path-Map",
    "prereqs" : {
       "build" : {
          "requires" : {
@@ -32,12 +32,12 @@
       }
    },
    "provides" : {
-      "Path::Mapper" : {
-         "file" : "lib/Path/Mapper.pm",
+      "Path::Map" : {
+         "file" : "lib/Path/Map.pm",
          "version" : "0.01"
       },
-      "Path::Mapper::Match" : {
-         "file" : "lib/Path/Mapper/Match.pm"
+      "Path::Map::Match" : {
+         "file" : "lib/Path/Map/Match.pm"
       }
    },
    "release_status" : "stable",

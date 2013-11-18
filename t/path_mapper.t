@@ -3,14 +3,14 @@ use warnings;
 
 use Test::More tests => 28;
 
-use Path::Mapper;
+use Path::Map;
 
-my $mapper = Path::Mapper->new(
+my $mapper = Path::Map->new(
     'a/b/c' => 'ABC',
     '/date/:year/:month/:day' => 'Date',
 );
 
-isa_ok($mapper, 'Path::Mapper', 'Path::Mapper->new');
+isa_ok($mapper, 'Path::Map', 'Path::Map->new');
 
 $mapper->add_handler('/date/:year/:day/:month/US' => 'Date');
 
