@@ -35,10 +35,59 @@ our $VERSION = '0.01';
 
 =head1 DESCRIPTION
 
-This class maps arbitrary items into a path-like structure, which can contain
-variable path segments, and allows them to be retrieved again. The most
-obvious application of this is to map paths to action handlers, so for this
-reason we refer to the items being mapped to by the paths as "handlers".
+This class maps paths to handlers. The paths can contain variable path
+segments, which match against any incoming path segment, where the matching
+segments are saved as named variables for later retrieval.
+
+Note that the handlers being mapped to can be any arbitrary data, not just
+strings as illustrated in the synopsis.
+
+=head2 Comparison with Path::Router
+
+This class fulfills some of the same jobs as L<Path::Router>, with slightly
+different design goals. Broadly speaking, Path::Mapper is a lighter, faster,
+but less featureful version of Path::Router.
+
+I've listed a few points of difference here to help highlight the pros and
+cons of each class.
+
+=over
+
+=item Speed
+
+The main goal for Path::Mapper is lookup speed. Path::Router uses regexes to
+do lookups, but Path::Mapper uses hash lookups. Path::Mapper seems to be at
+least an order of magnitude faster based on my benchmarks, and performance
+doesn't degrade with the number of routes that are added. The main source of
+performance degradation for Path::Mapper is path I<depth>, Path::Router
+degrades less with depth but more with width.
+
+This approach also means that the order in which routes are added makes no
+difference to Path::Mapper.
+
+=item Reversibility
+
+Path::Router has a specific aim of being reversible. That is to say you can
+construct a path from a set of parameters. Path::Mapper does not currently
+have this ability, patches welcome!
+
+=item Validation
+
+Path::Mapper has no built-in ability to validate path variables in any way.
+Obviously validation can be done externally after the fact, but that doesn't
+allow for the more complex routing rules possible in Path::Router. 
+
+In other words, it's not possible for Path::Mapper to differentiate two path
+templates which differ only in the variable segments (e.g. C<< /blog/:name >>
+vs C<< /blog/:id >> where C<id> matches C<\d+> and C<name> matches C<\D+>).
+
+=item Dependencies
+
+Path::Mapper has a very small dependency chain, whereas Path::Router is based
+on L<Moose>, so has a relatively high dependency footprint. If you're already
+using Moose, there's obviously no additional cost in using Path::Router.
+
+=back
 
 =cut
 
@@ -118,7 +167,7 @@ sub add_handler {
 Returns a L<Path::Mapper::Match> object if the path matches a known path
 template, C<undef> otherwise.
 
-The two main methods on the match object are
+The two main methods on the match object are:
 
 =over
 
@@ -202,8 +251,16 @@ sub _set_variables { $_[0]->{vars} = $_[1] }
 
 =head1 SEE ALSO
 
-L<Path::Router>, a more heavy-duty solution with more features but less
-performance.
+L<Path::Router>
+
+=head1 AUTHOR
+
+Matt Lawrence E<lt>mattlaw@cpan.orgE<gt>
+
+=head1 COPYRIGHT
+
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
 
 =cut
 
