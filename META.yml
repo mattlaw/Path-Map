@@ -20,6 +20,7 @@ provides:
   Path::Map::Match:
     file: lib/Path/Map/Match.pm
 requires:
+  List::MoreUtils: 0
   List::Util: 0
   perl: v5.8.0
 resources:
