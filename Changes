@@ -1,0 +1,8 @@
+Revision history for perl module Path::Map
+
+{{$NEXT}} 2013-11-19
+    - Added missing dependency
+
+0.02 2013-11-18
+    - Initial version
+

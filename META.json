@@ -35,7 +35,7 @@
    "provides" : {
       "Path::Map" : {
          "file" : "lib/Path/Map.pm",
-         "version" : "0.02"
+         "version" : "0.03"
       },
       "Path::Map::Match" : {
          "file" : "lib/Path/Map/Match.pm"
@@ -47,5 +47,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.02"
+   "version" : "0.03"
 }
