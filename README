@@ -11,6 +11,9 @@ SYNOPSIS
             '/a/b'   => 'AB',
 
             '/date/:year/:month/:day' => 'Date',
+
+            # Every path beginning 'SEO' is mapped the same.
+            '/seo/*' => 'slurpy',
         );
 
         if (my $match = $mapper->lookup('/date/2013/12/25')) {
@@ -99,6 +102,17 @@ METHODS
     The order in which these templates are added has no bearing on the
     lookup, except that later additions with identical templates overwrite
     earlier ones.
+
+    Templates containing a segment consisting entirely of '*' match
+    instantly at that point, with all remaining segments assigned to the
+    "values" of the match as normal, but without any variable names. Any
+    remaining segments in the template are ignored, so it only makes sense
+    for the wildcard to be the last segment.
+
+        my $map = Path::Map->new('foo/:foo/*' => 'Something');
+        my match = $map->lookup('foo/bar/baz/qux');
+        $match->variables; # { foo => 'bar' }
+        $match->values; # [ qw( bar baz qux ) ]
 
   lookup
         $match = $mapper->lookup($path)

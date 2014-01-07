@@ -23,6 +23,9 @@ our $VERSION = '0.03';
         '/a/b'   => 'AB',
 
         '/date/:year/:month/:day' => 'Date',
+
+        # Every path beginning 'SEO' is mapped the same.
+        '/seo/*' => 'slurpy',
     );
 
     if (my $match = $mapper->lookup('/date/2013/12/25')) {
@@ -75,7 +78,7 @@ have this ability, patches welcome!
 
 Path::Map has no built-in ability to validate path variables in any way.
 Obviously validation can be done externally after the fact, but that doesn't
-allow for the more complex routing rules possible in Path::Router. 
+allow for the more complex routing rules possible in Path::Router.
 
 In other words, it's not possible for Path::Map to differentiate two path
 templates which differ only in the variable segments (e.g. C<< /blog/:name >>
@@ -141,6 +144,17 @@ For example, these are all identical path templates:
 The order in which these templates are added has no bearing on the lookup,
 except that later additions with identical templates overwrite earlier ones.
 
+Templates containing a segment consisting entirely of C<'*'> match instantly
+at that point, with all remaining segments assigned to the C<values> of the
+match as normal, but without any variable names. Any remaining segments in the
+template are ignored, so it only makes sense for the wildcard to be the last
+segment.
+
+    my $map = Path::Map->new('foo/:foo/*' => 'Something');
+    my match = $map->lookup('foo/bar/baz/qux');
+    $match->variables; # { foo => 'bar' }
+    $match->values; # [ qw( bar baz qux ) ]
+
 =cut
 
 sub add_handler {
@@ -148,14 +162,16 @@ sub add_handler {
     my $class = ref $self;
 
     my @parts = $self->_tokenise_path($path);
-    my @vars;
+    my (@vars, $slurpy);
     my $mapper = reduce {
         $b =~ s{^:(.*)}{/} and push @vars, $1;
-        $a->_map->{$b} ||= $class->new;
+        $b eq '*' and $slurpy = 1;
+        $slurpy ? $a : $a->_map->{$b} ||= $class->new;
     } $self, @parts;
 
     $mapper->_set_target($handler);
     $mapper->_set_variables(\@vars);
+    $mapper->_set_slurpy if $slurpy;
 
     return;
 }
@@ -189,8 +205,16 @@ sub lookup {
 
     my @parts = $mapper->_tokenise_path($path);
     my @values;
+    my $slurpy_match;
 
     while () {
+        if ($mapper->_is_slurpy) {
+            $slurpy_match = Path::Map::Match->new(
+                mapper => $mapper,
+                values => [ @values, @parts ],
+            );
+        }
+
         if (my $segment = shift @parts) {
             my $map = $mapper->_map;
 
@@ -200,6 +224,9 @@ sub lookup {
             }
             elsif ($next = $map->{'/'}) {
                 push @values, $segment;
+            }
+            elsif ($slurpy_match) {
+                return $slurpy_match;
             }
             else {
                 return undef;
@@ -240,6 +267,12 @@ sub _tokenise_path {
 
     return grep length, split '/', $path;
 }
+
+sub _is_slurpy {
+    return defined $_[0]->{slurpy};
+}
+
+sub _set_slurpy { $_[0]->{slurpy} = 1 }
 
 sub _map { $_[0]->{map} ||= {} }
 
