@@ -16,7 +16,7 @@ name: Path-Map
 provides:
   Path::Map:
     file: lib/Path/Map.pm
-    version: 0.03
+    version: 0.04
   Path::Map::Match:
     file: lib/Path/Map/Match.pm
 requires:
@@ -25,4 +25,4 @@ requires:
   perl: v5.8.0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.03
+version: 0.04
