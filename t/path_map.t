@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 28;
+use Test::More tests => 29;
 
 use Path::Map;
 
@@ -36,7 +36,10 @@ for my $path (@variations) {
     );
 }
 
-is $mapper->lookup('/a/b/c/')->handler, 'ABC', "lookup('/a/b/c/')";
+my $match = $mapper->lookup('/a/b/c/');
+is $match->handler, 'ABC', "lookup('/a/b/c/')";
+is_deeply $match->variables, {},
+        'Empty variable hash when there are no variable segments';
 
 my @misses = (
     'date',

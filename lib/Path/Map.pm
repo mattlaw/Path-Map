@@ -246,7 +246,7 @@ sub _map { $_[0]->{map} ||= {} }
 sub _target     { $_[0]->{target} }
 sub _set_target { $_[0]->{target} = $_[1] }
 
-sub _variables     { $_[0]->{vars} || [] }
+sub _variables     { $_[0]->{vars} }
 sub _set_variables { $_[0]->{vars} = $_[1] }
 
 =head1 SEE ALSO
