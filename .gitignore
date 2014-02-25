@@ -4,3 +4,4 @@ Makefile
 Path-Map-*
 _build/
 blib/
+cover_db
